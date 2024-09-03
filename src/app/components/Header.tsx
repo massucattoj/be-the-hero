@@ -12,7 +12,7 @@ const Header: React.FC = () => {
           <nav>
             <ul className="flex space-x-4">
               <li>
-                <Link href="/dashboard">Login</Link>
+                <Link href="/dashboard">Dashboard</Link>
               </li>
             </ul>
           </nav>
