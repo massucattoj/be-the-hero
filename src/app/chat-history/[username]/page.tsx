@@ -25,8 +25,6 @@ const ChatHistoryPage: React.FC = () => {
       try {
         const response = await api.get(`/chat-history/${username}`)
 
-        console.log('response', response)
-
         // Map the response data to the format expected by messages state
         const formattedMessages = response.data.map((msg: ChatMessage) => ({
           text: msg.message,
