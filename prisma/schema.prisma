@@ -1,0 +1,27 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("MONGO_URL")
+}
+
+model Users {
+  id         String   @id @default(uuid()) @map("_id")
+  username   String   @unique
+  email      String   @unique
+  created_at DateTime @default(now())
+
+  @@map("users")
+}
+
+model ChatMessages {
+  id         String   @id @default(uuid()) @map("_id")
+  username   String
+  message    String
+  author     String
+  created_at DateTime @default(now())
+
+  @@map("chat-messages")
+}
