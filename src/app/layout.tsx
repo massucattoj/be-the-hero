@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import Header from './components/Header'
+import { Suspense } from 'react'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -20,7 +21,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <div className="min-h-screen">
           <Header />
-          {children}
+          <Suspense fallback={null}>{children}</Suspense>
         </div>
       </body>
     </html>

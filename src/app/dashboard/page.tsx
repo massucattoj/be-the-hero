@@ -1,21 +1,32 @@
-import React from 'react'
+'use client'
+
+import React, { useEffect, useState } from 'react'
 import { api } from '@/lib/axios'
 
 interface User {
   username: string
 }
 
-async function fetchUsers(): Promise<User[]> {
-  try {
-    const response = await api.get('/users')
-    return response.data
-  } catch (error) {
-    throw new Error('Failed to fetch users')
-  }
-}
+const DashboardPage: React.FC = () => {
+  const [users, setUsers] = useState<User[]>([])
+  const [error, setError] = useState<string | null>(null)
 
-const DashboardPage = async () => {
-  const users = await fetchUsers()
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await api.get('/users')
+        setUsers(response.data)
+      } catch (error) {
+        setError('Failed to fetch users')
+      }
+    }
+
+    fetchUsers()
+  }, [])
+
+  if (error) {
+    return <div className="text-red-500">{error}</div>
+  }
 
   return (
     <div className="flex min-h-screen flex-col items-center bg-gradient-to-r from-purple-100 to-gray-800 pt-[64px]">
@@ -42,4 +53,5 @@ const DashboardPage = async () => {
     </div>
   )
 }
+
 export default DashboardPage
