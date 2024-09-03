@@ -93,7 +93,7 @@ const ChatPage: React.FC = () => {
 
   return (
     <div className="flex min-h-screen flex-col items-center bg-gradient-to-r from-purple-100 to-gray-800 pt-[64px]">
-      <div className="my-10 flex h-[calc(100vh-146px)] w-full max-w-4xl flex-col rounded-lg bg-gray-700 p-6 shadow-md">
+      <div className="my-10 flex h-[calc(100vh-146px)] w-full max-w-4xl flex-col rounded-lg bg-gray-700 p-4 shadow-md md:p-6">
         <div className="flex-1 overflow-y-auto p-2 pt-12">
           {messages.map((message, index) => (
             <div
@@ -109,17 +109,17 @@ const ChatPage: React.FC = () => {
           ))}
           <div ref={messagesEndRef} className="mb-28" />
         </div>
-        <div className="flex items-center border-t border-gray-300 pt-4">
+        <div className="flex flex-col items-center space-y-4 border-t border-gray-300 pt-4 md:flex-row md:space-x-4 md:space-y-0">
           <textarea
             className="flex-1 resize-none rounded-md border border-gray-500 bg-gray-800 px-3 py-2 text-purple-100 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-            rows={4}
+            rows={3}
             placeholder="Type your message..."
             value={input}
             onChange={(e) => setInput(e.target.value)}
           />
           <button
             type="button"
-            className="ml-4 flex items-center rounded-md bg-gray-600 px-4 py-2 text-purple-100 shadow transition-colors duration-300 ease-in-out hover:bg-gray-500"
+            className="flex items-center rounded-md bg-gray-600 px-4 py-2 text-purple-100 shadow transition-colors duration-300 ease-in-out hover:bg-gray-500"
             onClick={handleSendMessage}
           >
             Send

@@ -29,7 +29,9 @@ describe('HomePage', () => {
     const title = screen.getByText('be The Hero')
 
     expect(title).toBeInTheDocument()
-    expect(title).toHaveClass('text-5xl', 'font-bold', 'text-white')
+    expect(title).toHaveClass(
+      'mb-4 text-center text-4xl font-bold text-white sm:text-5xl',
+    )
   })
 
   it('should render the description quote', () => {
@@ -41,10 +43,7 @@ describe('HomePage', () => {
 
     expect(description).toBeInTheDocument()
     expect(description).toHaveClass(
-      'mb-8',
-      'text-center',
-      'text-lg',
-      'text-purple-100',
+      'mb-8 text-center text-base text-purple-100 sm:text-lg',
     )
   })
 
