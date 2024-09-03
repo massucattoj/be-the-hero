@@ -16,6 +16,7 @@ Some techs used:
 
 To run locally
 ```
+npm i
 npm run dev
 ```
 
