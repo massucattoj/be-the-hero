@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { ArrowLineLeft, CaretDoubleUp } from 'phosphor-react'
 import { api } from '@/lib/axios'
@@ -15,6 +15,7 @@ const ChatPage: React.FC = () => {
   const searchParams = useSearchParams()
   const username = searchParams.get('username')
   const router = useRouter()
+  const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
@@ -40,6 +41,13 @@ const ChatPage: React.FC = () => {
 
     sendInitialBotMessage()
   }, [username])
+
+  useEffect(() => {
+    // Scroll to the bottom whenever messages change
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' })
+    }
+  }, [messages])
 
   const handleSendMessage = async () => {
     if (input.trim() === '') return
@@ -86,7 +94,7 @@ const ChatPage: React.FC = () => {
   return (
     <div className="flex min-h-screen flex-col items-center bg-gradient-to-r from-purple-100 to-gray-800 pt-[64px]">
       <div className="my-10 flex h-[calc(100vh-146px)] w-full max-w-4xl flex-col rounded-lg bg-gray-700 p-6 shadow-md">
-        <div className="flex-1 overflow-auto p-2 pt-12">
+        <div className="flex-1 overflow-y-auto p-2 pt-12">
           {messages.map((message, index) => (
             <div
               key={index}
@@ -99,10 +107,11 @@ const ChatPage: React.FC = () => {
               </div>
             </div>
           ))}
+          <div ref={messagesEndRef} className="mb-28" />
         </div>
         <div className="flex items-center border-t border-gray-300 pt-4">
           <textarea
-            className="flex-1 resize-none rounded-md border border-gray-500 bg-gray-800 p-2 text-white"
+            className="flex-1 resize-none rounded-md border border-gray-500 bg-gray-800 px-3 py-2 text-purple-100 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
             rows={4}
             placeholder="Type your message..."
             value={input}
