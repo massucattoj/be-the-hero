@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { ArrowLineLeft, CaretDoubleUp } from 'phosphor-react'
 import { api } from '@/lib/axios'
-import { botResponses } from '@/utils/botResponses'
+import { getRandomBotResponse } from '@/utils/getBotResponse'
 
 interface ChatMessage {
   message: string
@@ -16,74 +16,92 @@ const ChatPage: React.FC = () => {
   const username = searchParams.get('username')
   const router = useRouter()
   const messagesEndRef = useRef<HTMLDivElement>(null)
-
+  const [input, setInput] = useState('')
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
-      message: `Welcome ${username}, how can I assist you today?`,
+      message: `🚀 Heeey ${username}! 👋 I'm here to assist you. Tell me what do you need to be your own hero? 🥷`,
       author: 'bot',
     },
   ])
 
-  const [input, setInput] = useState('')
-
+  // Scroll to the bottom whenever messages change
   useEffect(() => {
-    const sendInitialBotMessage = async () => {
-      try {
-        await api.post('/chat-messages', {
-          username,
-          message: `Welcome ${username}, how can I assist you today?`,
-          author: 'bot',
-        })
-      } catch (error) {
-        console.error('Error storing initial bot message:', error)
-      }
-    }
-
-    sendInitialBotMessage()
-  }, [username])
-
-  useEffect(() => {
-    // Scroll to the bottom whenever messages change
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' })
     }
   }, [messages])
 
-  const handleSendMessage = async () => {
-    if (input.trim() === '') return
+  const simulatedBotMessage = async () => {
+    const randomResponse = getRandomBotResponse()
 
-    // Add user message
-    setMessages([...messages, { message: input, author: 'user' }])
-    setInput('')
-
-    try {
-      await api.post('/chat-messages', {
-        username,
-        message: input,
-        author: 'user',
-      })
-    } catch (error) {
-      console.error('Error storing message:', error)
-    }
-
-    // Simulate bot response
-    const randomResponse =
-      botResponses[Math.floor(Math.random() * botResponses.length)]
-    setMessages([
-      ...messages,
-      { message: input, author: 'user' },
+    // Add bot message
+    setMessages((prevMessages) => [
+      ...prevMessages,
       { message: randomResponse, author: 'bot' },
     ])
 
-    // Send bot message to API
     try {
+      // Store the simulated bot message
       await api.post('/chat-messages', {
         username,
         message: randomResponse,
         author: 'bot',
       })
     } catch (error) {
+      console.error('Error storing bot message:', error)
+    }
+  }
+
+  const handleSendMessage = async () => {
+    if (input.trim() === '') return
+
+    // Add user message
+    setMessages((prevMessages) => [
+      ...prevMessages,
+      { message: input, author: 'user' },
+    ])
+
+    const userMessage = input
+    setInput('')
+
+    try {
+      await api.post('/chat-messages', {
+        username,
+        message: userMessage,
+        author: 'user',
+      })
+    } catch (error) {
       console.error('Error storing message:', error)
+    }
+
+    if (process.env.NEXT_PUBLIC_OPENAI_API_KEY) {
+      // Fetch bot response from API
+      try {
+        const response = await api.post('/messages', {
+          message: userMessage,
+        })
+        const botMessage = response.data.botMessage
+
+        // Add bot message
+        setMessages((prevMessages) => [
+          ...prevMessages,
+          { message: botMessage, author: 'bot' },
+        ])
+
+        // Store bot message
+        await api.post('/chat-messages', {
+          username,
+          message: botMessage,
+          author: 'bot',
+        })
+      } catch (error) {
+        console.error('Error fetching bot response:', error)
+
+        // If an error occurs fallback to the simulated bot message
+        simulatedBotMessage()
+      }
+    } else {
+      simulatedBotMessage()
     }
   }
 
@@ -98,10 +116,16 @@ const ChatPage: React.FC = () => {
           {messages.map((message, index) => (
             <div
               key={index}
-              className={`mb-2 flex ${message.author === 'user' ? 'justify-end' : 'justify-start'}`}
+              className={`mb-2 flex ${
+                message.author === 'user' ? 'justify-end' : 'justify-start'
+              }`}
             >
               <div
-                className={`max-w-sm rounded-md p-3 ${message.author === 'user' ? 'bg-purple-700 text-right' : 'bg-gray-600 text-left text-white'}`}
+                className={`max-w-sm rounded-md p-3 ${
+                  message.author === 'user'
+                    ? 'bg-purple-700 text-right'
+                    : 'bg-gray-600 text-left text-white'
+                }`}
               >
                 {message.message}
               </div>

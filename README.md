@@ -35,3 +35,6 @@ https://be-the-hero-production.up.railway.app/
 ![TypeScript](https://img.shields.io/badge/typescript-007ACC?logo=typescript&logoColor=white)
 ![TailwindCSS](https://img.shields.io/badge/tailwindcss-0F172A?&logo=tailwindcss)
 ![MongoDB](https://img.shields.io/badge/-MongoDB-13aa52?style=for-the-badge&logo=mongodb&logoColor=white)
+
+## Useful
+https://platform.openai.com/docs/api-reference/making-requests

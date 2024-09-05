@@ -25,3 +25,10 @@ model ChatMessages {
 
   @@map("chat-messages")
 }
+
+// TODO: Create also a new variable chat_id on ChatMessags, so instead have 
+// a long conversation I can have multiples chats, than add an array 
+// of chat ids to the Users table to retrivie the multipls chats of an user
+
+// Otherwise can have an array of messages on Users table if needed. Since
+// username is unique it's easy to find all the messages on ChatMessages
