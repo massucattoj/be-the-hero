@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { api } from '@/lib/axios'
 import { ArrowLineLeft } from 'phosphor-react'
@@ -41,6 +41,15 @@ const ChatHistoryPage: React.FC = () => {
     fetchChatHistory()
   }, [username])
 
+  const formattedMessages = useMemo(
+    () =>
+      messages.map((message) => ({
+        ...message,
+        formattedTime: message.timestamp.toLocaleTimeString(),
+      })),
+    [messages],
+  )
+
   const handleBack = () => {
     router.push('/dashboard')
   }
@@ -61,7 +70,7 @@ const ChatHistoryPage: React.FC = () => {
         <hr className="my-4 w-full border-t border-white" />
 
         <div className="mt-4">
-          {messages.map((message, index) => (
+          {formattedMessages.map((message, index) => (
             <div
               key={index}
               className={`mb-2 ${message.type === 'user' ? 'text-right' : 'text-left'}`}
